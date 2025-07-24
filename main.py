@@ -1,4 +1,3 @@
-# main.py
 
 import torch
 from detector import load_model, detect_players
@@ -16,13 +15,11 @@ def draw_matches(matched_frame, out_dir, frame_source):
     dets_a = matched_frame['detections_a']
     dets_b = matched_frame['detections_b']
 
-    # Load original frames
     frame_a_path = f"output_frames/{frame_source[0]}/frame{idx}_full.jpg"
     frame_b_path = f"output_frames/{frame_source[1]}/frame{idx}_full.jpg"
     frame_a = cv2.imread(frame_a_path)
     frame_b = cv2.imread(frame_b_path)
 
-    # Draw all detection boxes first (gray)
     for det in dets_a:
         x1, y1, x2, y2 = det['bbox']
         cv2.rectangle(frame_a, (x1, y1), (x2, y2), (128, 128, 128), 1)
@@ -31,20 +28,16 @@ def draw_matches(matched_frame, out_dir, frame_source):
         x1, y1, x2, y2 = det['bbox']
         cv2.rectangle(frame_b, (x1, y1), (x2, y2), (128, 128, 128), 1)
 
-    # Draw matched boxes with IDs (green for A, blue for B)
     for pid, (i, j) in enumerate(matches):
         xa1, ya1, xa2, ya2 = dets_a[i]['bbox']
         xb1, yb1, xb2, yb2 = dets_b[j]['bbox']
 
-        # Broadcast (A) view
         cv2.rectangle(frame_a, (xa1, ya1), (xa2, ya2), (0, 255, 0), 2)
         cv2.putText(frame_a, f"ID {pid}", (xa1, ya1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
 
-        # Tacticam (B) view
         cv2.rectangle(frame_b, (xb1, yb1), (xb2, yb2), (255, 0, 0), 2)
         cv2.putText(frame_b, f"ID {pid}", (xb1, yb1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
 
-    # Save annotated frames
     os.makedirs(out_dir, exist_ok=True)
     cv2.imwrite(f"{out_dir}/broadcast_frame{idx}.jpg", frame_a)
     cv2.imwrite(f"{out_dir}/tacticam_frame{idx}.jpg", frame_b)
@@ -70,7 +63,6 @@ def frames_to_video(input_folder, output_path, prefix="broadcast", fps=30):
         print(f"No frames found for prefix '{prefix}' in {input_folder}")
         return
 
-    # Read first frame to get dimensions
     frame = cv2.imread(images[0])
     height, width, _ = frame.shape
     out = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
