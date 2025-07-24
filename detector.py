@@ -19,7 +19,7 @@ def detect_players(video_path, model, output_dir="output_frames", conf_thresh=0.
         if not ret:
             break
 
-        results = model(frame)[0]  # YOLOv8 format
+        results = model(frame)[0] 
         detections = []
         for box in results.boxes:
             cls = int(box.cls)
