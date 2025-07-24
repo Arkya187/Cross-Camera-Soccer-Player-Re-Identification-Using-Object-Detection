@@ -1,9 +1,7 @@
-# matcher.py
 
 import numpy as np
 from scipy.spatial.distance import cosine
 
-# Match players from two frames using cosine similarity
 def match_players(frame_data_a, frame_data_b, similarity_threshold=0.5):
     matched_frames = []
 
@@ -15,7 +13,7 @@ def match_players(frame_data_a, frame_data_b, similarity_threshold=0.5):
         used_b = set()
         for i, det_a in enumerate(detections_a):
             best_match = -1
-            best_score = float('inf')  # cosine distance (lower is better)
+            best_score = float('inf')
 
             for j, det_b in enumerate(detections_b):
                 if j in used_b:
@@ -28,7 +26,7 @@ def match_players(frame_data_a, frame_data_b, similarity_threshold=0.5):
 
             if best_match != -1 and best_score < similarity_threshold:
                 used_b.add(best_match)
-                matches.append((i, best_match))  # (index in A, index in B)
+                matches.append((i, best_match))
 
         matched_frames.append({
             "frame_idx": frame_a['frame_idx'],
